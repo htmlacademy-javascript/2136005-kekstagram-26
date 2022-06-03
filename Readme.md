@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
 * Студент: [Дарья Астафьева](https://up.htmlacademy.ru/javascript/26/user/2136005).
-* Наставник: [Роман Марченко](https://htmlacademy.ru/profile/id505487).
+* Наставник: [Роман Марченко ](https://htmlacademy.ru/profile/id505487).
 
 ---
 
