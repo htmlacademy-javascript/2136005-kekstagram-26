@@ -47,7 +47,7 @@ function checkStringLength (chekingString, max) {
   return chekingString.length <= max;
 }
 
-const createUnicId = (array, upper) => {
+function createUnicId (array, upper) {
   let randomId = getRandomNumber(LOWER_ID_BOUND, upper);
   if (array !== []) {
     while (array.filter((value) => value.id === randomId).length > 0) {
