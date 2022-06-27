@@ -1,16 +1,13 @@
-import {createNewPhotoDescriptionList} from './data.js';
-
-function generatePhotoElements () {
+function generatePhotoElements (dataList) {
   const photoTemplate = document.querySelector('#picture').content.querySelector('.picture');
-  const descriptionList = createNewPhotoDescriptionList();
   const photosFragment = document.createDocumentFragment();
   const pictureContainer = document.querySelector('.pictures');
 
-  for (let i = 0; i < descriptionList.length; i++) {
+  for (let i = 0; i < dataList.length; i++) {
     const newPhoto = photoTemplate.cloneNode(true);
-    newPhoto.querySelector('img').src = descriptionList[i].url;
-    newPhoto.querySelector('.picture__likes').textContent = descriptionList[i].likes;
-    newPhoto.querySelector('.picture__comments').textContent = descriptionList[i].comments.length;
+    newPhoto.querySelector('img').src = dataList[i].url;
+    newPhoto.querySelector('.picture__likes').textContent = dataList[i].likes;
+    newPhoto.querySelector('.picture__comments').textContent = dataList[i].comments.length;
 
     photosFragment.append(newPhoto);
   }
