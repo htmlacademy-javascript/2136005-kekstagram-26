@@ -1,3 +1,3 @@
-import {createNewPhotoDescriptionList} from './data.js';
+import {generatePhotoElements} from './thumbnails.js';
 
-createNewPhotoDescriptionList();
+generatePhotoElements();
