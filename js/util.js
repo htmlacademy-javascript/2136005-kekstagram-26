@@ -14,7 +14,7 @@ function checkStringLength (chekingString, max) {
 
 function createUnicNumber (array, upper, lowerBound) {
   let randomNumber = getRandomNumber(lowerBound, upper);
-  if (array.length === 0) {
+  if (array.length !== 0) {
     while (array.filter((value) => value.id === randomNumber).length > 0) {
       randomNumber = getRandomNumber(lowerBound, upper);
     }
