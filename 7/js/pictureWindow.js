@@ -42,6 +42,17 @@ function showBigPicture (picture, list, text) {
       bigPictureElement.classList.add('hidden');
     }
   });
+
+  closeButtonElement.removeEventListener('click', () => {
+    bigPictureElement.classList.add('hidden');
+    document.querySelector('body').classList.remove('modal-open');
+  });
+
+  document.removeEventListener('keydown', (evt) => {
+    if (evt.code === 'Escape') {
+      bigPictureElement.classList.add('hidden');
+    }
+  });
 }
 
 export {showBigPicture};
