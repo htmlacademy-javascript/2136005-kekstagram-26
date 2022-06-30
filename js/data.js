@@ -66,4 +66,5 @@ function createNewPhotoDescriptionList () {
   return photosList;
 }
 checkStringLength('chekingString', 3);
+
 export {createNewPhotoDescriptionList};
