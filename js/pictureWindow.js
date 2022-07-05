@@ -1,4 +1,6 @@
-function addComments (list, element) {
+import { modalHelper } from './modalHelper.js';
+
+const addComments = (list, element) => {
   const commentsFragmentElement = document.createDocumentFragment();
   for (let i = 0; i < list.length; i++) {
     const commentTemplateElement = element.querySelector('.social__comment').cloneNode(true);
@@ -10,9 +12,9 @@ function addComments (list, element) {
     commentsFragmentElement.append(commentTemplateElement);
   }
   element.replaceChildren(commentsFragmentElement);
-}
+};
 
-function showBigPicture (picture, list, text) {
+const showBigPicture = (picture, list, text) => {
 
   const bigPictureElement = document.querySelector('.big-picture');
   const closeButtonElement = bigPictureElement.querySelector('.big-picture__cancel');
@@ -20,10 +22,9 @@ function showBigPicture (picture, list, text) {
   const commentCountElement = bigPictureElement.querySelector('.social__comment-count');
   const commentsLoaderButtonElement = bigPictureElement.querySelector('.comments-loader');
 
-  bigPictureElement.classList.remove('hidden');
+  modalHelper(bigPictureElement, closeButtonElement, true);
   commentCountElement.classList.add('hidden');
   commentsLoaderButtonElement.classList.add('hidden');
-  document.querySelector('body').classList.add('modal-open');
 
   bigPictureElement.querySelector('.big-picture__img').querySelector('img').src = picture.querySelector('img').src;
   bigPictureElement.querySelector('.likes-count').textContent = picture.querySelector('.picture__likes').textContent;
@@ -31,28 +32,6 @@ function showBigPicture (picture, list, text) {
   bigPictureElement.querySelector('.social__caption').textContent = text;
 
   addComments(list, commentsElement);
-
-  closeButtonElement.addEventListener('click', () => {
-    bigPictureElement.classList.add('hidden');
-    document.querySelector('body').classList.remove('modal-open');
-  });
-
-  document.addEventListener('keydown', (evt) => {
-    if (evt.code === 'Escape') {
-      bigPictureElement.classList.add('hidden');
-    }
-  });
-
-  closeButtonElement.removeEventListener('click', () => {
-    bigPictureElement.classList.add('hidden');
-    document.querySelector('body').classList.remove('modal-open');
-  });
-
-  document.removeEventListener('keydown', (evt) => {
-    if (evt.code === 'Escape') {
-      bigPictureElement.classList.add('hidden');
-    }
-  });
-}
+};
 
 export {showBigPicture};
