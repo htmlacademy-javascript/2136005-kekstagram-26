@@ -1,13 +1,12 @@
 import {showBigPicture} from './pictureWindow.js';
 
-function thumbnailClickHandler (thumbnail, commentsList, description) {
-
+const thumbnailClickHandler = (thumbnail, commentsList, description) => {
   thumbnail.addEventListener('click', () => {
     showBigPicture(thumbnail, commentsList, description);
   });
-}
+};
 
-function generatePhotoElements (dataList) {
+const generatePhotoElements = (dataList) => {
   const photoTemplateElement= document.querySelector('#picture').content.querySelector('.picture');
   const photosFragmentElement = document.createDocumentFragment();
   const pictureContainerElement = document.querySelector('.pictures');
@@ -22,6 +21,6 @@ function generatePhotoElements (dataList) {
     photosFragmentElement.append(newPhotoElement);
   }
   pictureContainerElement.append(photosFragmentElement);
-}
+};
 
 export {generatePhotoElements};

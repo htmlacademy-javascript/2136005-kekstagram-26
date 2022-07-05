@@ -35,7 +35,7 @@ const UPPER_COMMENTS_BOUND = 10;
 const MIN_LIKES = 15;
 const MAX_LIKES = 200;
 
-function createcommentsList(){
+const createcommentsList = () => {
   const commentsList = [];
   const commentsAmount = getRandomNumber(LOWER_ID_BOUND, UPPER_COMMENTS_BOUND);
   for(let i = LOWER_ID_BOUND; i <= commentsAmount; i++) {
@@ -48,9 +48,9 @@ function createcommentsList(){
     commentsList.push(comment);
   }
   return commentsList;
-}
+};
 
-function createNewPhotoDescriptionList () {
+const createNewPhotoDescriptionList = () => {
   const photosList =[];
   for(let i = LOWER_ARRAY_BOUND+1; i <= UPPER_PHOTO_ID_BOUND; i++) {
     const photo = {
@@ -64,7 +64,8 @@ function createNewPhotoDescriptionList () {
   }
 
   return photosList;
-}
+};
+
 checkStringLength('chekingString', 3);
 
 export {createNewPhotoDescriptionList};
