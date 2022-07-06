@@ -1,8 +1,9 @@
 import { modalHelper } from './modalHelper.js';
+import { getDescriptionsList } from './main.js';
 
-const addComments = (list, element) => {
+const addComments = (list, element, firstIndex, maxIndex) => {
   const commentsFragmentElement = document.createDocumentFragment();
-  for (let i = 0; i < list.length; i++) {
+  for (let i = firstIndex; i < maxIndex; i++) {
     const commentTemplateElement = element.querySelector('.social__comment').cloneNode(true);
 
     commentTemplateElement.querySelector('img').src = list[i].avatar;
@@ -11,27 +12,54 @@ const addComments = (list, element) => {
 
     commentsFragmentElement.append(commentTemplateElement);
   }
-  element.replaceChildren(commentsFragmentElement);
+  if(firstIndex === 0) {
+    element.replaceChildren(commentsFragmentElement);
+  } else {
+    element.appendChild(commentsFragmentElement);
+  }
 };
 
-const showBigPicture = (picture, list, text) => {
+const showBigPicture = (evt) => {
+  if (evt.target.parentNode.matches('.picture')) {
+    const dataList = getDescriptionsList();
+    const id = evt.target.parentNode.dataset.id;
+    const photoData = dataList.find((data) => data.id === parseInt(id, 10));
+    const commentsList = photoData.comments;
+    const bigPictureElement = document.querySelector('.big-picture');
+    const closeButtonElement = bigPictureElement.querySelector('.big-picture__cancel');
+    const commentsElement = bigPictureElement.querySelector('.social__comments');
+    const commentCountElement = bigPictureElement.querySelector('.social__comment-count');
+    const commentsLoaderButtonElement = bigPictureElement.querySelector('.comments-loader');
+    const totalCommentsTemplate = bigPictureElement.querySelector('.comments-count').cloneNode(true);
 
-  const bigPictureElement = document.querySelector('.big-picture');
-  const closeButtonElement = bigPictureElement.querySelector('.big-picture__cancel');
-  const commentsElement = bigPictureElement.querySelector('.social__comments');
-  const commentCountElement = bigPictureElement.querySelector('.social__comment-count');
-  const commentsLoaderButtonElement = bigPictureElement.querySelector('.comments-loader');
+    modalHelper(bigPictureElement, closeButtonElement, true);
 
-  modalHelper(bigPictureElement, closeButtonElement, true);
-  commentCountElement.classList.add('hidden');
-  commentsLoaderButtonElement.classList.add('hidden');
+    bigPictureElement.querySelector('.big-picture__img').querySelector('img').src = photoData.url;
+    bigPictureElement.querySelector('.likes-count').textContent = photoData.likes;
+    totalCommentsTemplate.textContent = commentsList.length;
+    commentCountElement.textContent = `${commentsList.length < 6 ? commentsList.length : 5} из `;
+    commentCountElement.appendChild(totalCommentsTemplate);
+    bigPictureElement.querySelector('.social__caption').textContent = photoData.description;
 
-  bigPictureElement.querySelector('.big-picture__img').querySelector('img').src = picture.querySelector('img').src;
-  bigPictureElement.querySelector('.likes-count').textContent = picture.querySelector('.picture__likes').textContent;
-  bigPictureElement.querySelector('.comments-count').textContent = picture.querySelector('.picture__comments').textContent;
-  bigPictureElement.querySelector('.social__caption').textContent = text;
+    const commentsNumber = commentsList.length < 6 ? commentsList.length : 5;
+    addComments(commentsList, commentsElement, 0, commentsNumber);
 
-  addComments(list, commentsElement);
+    if(commentsList.length > 5) {
+      commentsLoaderButtonElement.classList.remove('hidden');
+      const loaderButtonClickHandler = () => {
+        const commentsAmount = commentsList.length < commentsElement.childNodes.length + 5 ? commentsList.length : commentsElement.childNodes.length + 5;
+        addComments(commentsList, commentsElement, commentsElement.childNodes.length, commentsAmount);
+        commentCountElement.textContent = `${commentsAmount} из `;
+        commentCountElement.appendChild(totalCommentsTemplate);
+        if(commentsList.length === commentsElement.childNodes.length) {
+          commentsLoaderButtonElement.removeEventListener('click', loaderButtonClickHandler);
+          commentsLoaderButtonElement.classList.add('hidden');
+        }
+      };
+
+      commentsLoaderButtonElement.addEventListener('click', loaderButtonClickHandler);
+    }
+  }
 };
 
 export {showBigPicture};

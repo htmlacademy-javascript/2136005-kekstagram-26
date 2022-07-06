@@ -14,7 +14,7 @@ const modalHelper = (modalElement, closeButtonElement, isOpening) => {
     document.addEventListener('keydown', pictureEscKeydownHelper);
     closeButtonElement.addEventListener('click', () => {
       closePictureModal();
-    });
+    }, {once: true});
   }
 
   if(!isOpening) {
