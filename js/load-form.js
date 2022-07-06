@@ -57,7 +57,7 @@ const validateHashtags = (value) => {
 
 pristine.addValidator(hashtagsElement, validateHashtags, getHashtagErrorMessage);
 
-pristine.addValidator(commentElement, (value) => value.length <= 140, 'Длина комментария не может составлять больше 140 символов.')
+pristine.addValidator(commentElement, (value) => value.length <= 140, 'Длина комментария не может составлять больше 140 символов.');
 
 uploadFormElement.addEventListener('submit', (evt) => {
   if (pristine.validate()) {
