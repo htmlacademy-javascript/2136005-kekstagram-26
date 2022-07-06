@@ -1,4 +1,5 @@
 import {modalHelper} from './modalHelper.js';
+import { findDuplicateElements } from './util.js';
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const regularExpression = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
@@ -59,7 +60,6 @@ pristine.addValidator(hashtagsElement, validateHashtags, getHashtagErrorMessage)
 pristine.addValidator(commentElement, (value) => value.length <= 140, 'Длина комментария не может составлять больше 140 символов.')
 
 uploadFormElement.addEventListener('submit', (evt) => {
-  console.log(pristine.validate());
   if (pristine.validate()) {
     evt.preventDefault();
     hashtagsElement.value = '';
