@@ -1,8 +1,12 @@
+/* eslint-disable no-console */
 import {modalHelper} from './modalHelper.js';
 import { findDuplicateElements } from './util.js';
+import {resetEffects} from './effect.js';
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const regularExpression = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
+const scaleIncrement = 25;
+const firstScaleValue = '100%';
 
 const uploadFormElement = document.querySelector('.img-upload__form');
 const fileChooserElement = uploadFormElement.querySelector('#upload-file');
@@ -11,6 +15,36 @@ const preview = uploadFieldElement.querySelector('.img-upload__preview img');
 const hashtagsElement = uploadFormElement.querySelector('.text__hashtags');
 const commentElement = uploadFormElement.querySelector('.text__description');
 const closeButtonElement = uploadFieldElement.querySelector('#upload-cancel');
+const scaleSmallerElement = uploadFieldElement.querySelector('.scale__control--smaller');
+const scaleBiggerElement = uploadFieldElement.querySelector('.scale__control--bigger');
+const scaleValueElement = uploadFieldElement.querySelector('.scale__control--value');
+const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
+
+scaleValueElement.value = firstScaleValue;
+
+scaleSmallerElement.addEventListener('click', () => {
+  let currentScaleValue = parseInt(scaleValueElement.value, 10);
+  if(currentScaleValue >= 50) {
+    scaleValueElement.value = `${currentScaleValue - scaleIncrement}%`;
+    currentScaleValue -= 25;
+    preview.style.transform = `scale(0.${currentScaleValue})`;
+  }
+});
+
+scaleBiggerElement.addEventListener('click', () => {
+  let currentScaleValue = parseInt(scaleValueElement.value, 10);
+  if(currentScaleValue < 75) {
+    scaleValueElement.value = `${currentScaleValue + scaleIncrement}%`;
+    currentScaleValue += 25;
+    preview.style.transform = `scale(0.${currentScaleValue})`;
+  } else {
+    scaleValueElement.value = `${currentScaleValue + scaleIncrement}%`;
+    preview.style.transform = 'scale(1)';
+  }
+});
+
+sliderElement.classList.add('hidden');
+resetEffects();
 
 const pristine = new Pristine(uploadFormElement, {
   classTo: 'img-upload__field-wrapper',
@@ -60,10 +94,12 @@ pristine.addValidator(hashtagsElement, validateHashtags, getHashtagErrorMessage)
 pristine.addValidator(commentElement, (value) => value.length <= 140, 'Длина комментария не может составлять больше 140 символов.');
 
 uploadFormElement.addEventListener('submit', (evt) => {
-  if (pristine.validate()) {
+  if (!pristine.validate()) {
     evt.preventDefault();
     hashtagsElement.value = '';
     commentElement.value = '';
+    scaleValueElement.value = firstScaleValue;
+    preview.style.transform = 'scale(1)';
     modalHelper(uploadFieldElement, closeButtonElement, false);
   }
 });
