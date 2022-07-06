@@ -58,6 +58,8 @@ const showBigPicture = (evt) => {
       };
 
       commentsLoaderButtonElement.addEventListener('click', loaderButtonClickHandler);
+    }else {
+      commentsLoaderButtonElement.classList.add('hidden');
     }
   }
 };

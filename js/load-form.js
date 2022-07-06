@@ -1,9 +1,12 @@
+/* eslint-disable no-console */
 import {modalHelper} from './modalHelper.js';
 import { findDuplicateElements } from './util.js';
+import {resetEffects} from './effect.js';
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const regularExpression = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
 const scaleIncrement = 25;
+const firstScaleValue = '100%';
 
 const uploadFormElement = document.querySelector('.img-upload__form');
 const fileChooserElement = uploadFormElement.querySelector('#upload-file');
@@ -16,44 +19,32 @@ const scaleSmallerElement = uploadFieldElement.querySelector('.scale__control--s
 const scaleBiggerElement = uploadFieldElement.querySelector('.scale__control--bigger');
 const scaleValueElement = uploadFieldElement.querySelector('.scale__control--value');
 const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
-// const effectsList = uploadFormElement.querySelector('.img-upload__effects');
+
+scaleValueElement.value = firstScaleValue;
 
 scaleSmallerElement.addEventListener('click', () => {
-  const currentScaleValue = parseInt(scaleValueElement.value, 10);
-  if(currentScaleValue > 50) {
+  let currentScaleValue = parseInt(scaleValueElement.value, 10);
+  if(currentScaleValue >= 50) {
     scaleValueElement.value = `${currentScaleValue - scaleIncrement}%`;
-    preview.style.transform = `scale(0.${parseInt(scaleValueElement.value, 10)})`;
-  } else {
-    scaleValueElement.value = '25%';
-    preview.style.transform = 'scale(0.25)';
+    currentScaleValue -= 25;
+    preview.style.transform = `scale(0.${currentScaleValue})`;
   }
-
 });
 
 scaleBiggerElement.addEventListener('click', () => {
-  const currentScaleValue = parseInt(scaleValueElement.value, 10);
-  if(currentScaleValue <= 75) {
+  let currentScaleValue = parseInt(scaleValueElement.value, 10);
+  if(currentScaleValue < 75) {
     scaleValueElement.value = `${currentScaleValue + scaleIncrement}%`;
-    preview.style.transform = `scale(1.${parseInt(scaleValueElement.value, 10)})`;
+    currentScaleValue += 25;
+    preview.style.transform = `scale(0.${currentScaleValue})`;
   } else {
-    scaleValueElement.value = '100%';
-    preview.style.transform = 'scale(2)';
+    scaleValueElement.value = `${currentScaleValue + scaleIncrement}%`;
+    preview.style.transform = 'scale(1)';
   }
 });
 
-// effectsList.addEventListener('click', (evt) => {
-//   console.log('click');
-// });
-
-noUiSlider.create(sliderElement, {
-  range: {
-    min: 0,
-    max: 100,
-  },
-  start: 80,
-  step: 1,
-  connect: 'lower',
-});
+sliderElement.classList.add('hidden');
+resetEffects();
 
 const pristine = new Pristine(uploadFormElement, {
   classTo: 'img-upload__field-wrapper',
@@ -103,11 +94,11 @@ pristine.addValidator(hashtagsElement, validateHashtags, getHashtagErrorMessage)
 pristine.addValidator(commentElement, (value) => value.length <= 140, 'Длина комментария не может составлять больше 140 символов.');
 
 uploadFormElement.addEventListener('submit', (evt) => {
-  if (pristine.validate()) {
+  if (!pristine.validate()) {
     evt.preventDefault();
     hashtagsElement.value = '';
     commentElement.value = '';
-    scaleValueElement.value = '55%';
+    scaleValueElement.value = firstScaleValue;
     preview.style.transform = 'scale(1)';
     modalHelper(uploadFieldElement, closeButtonElement, false);
   }
