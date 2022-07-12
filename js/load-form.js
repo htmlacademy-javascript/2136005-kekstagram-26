@@ -1,12 +1,12 @@
 ///* eslint-disable no-console */
-import {modalHelper} from './modalHelper.js';
-import {findDuplicateElements, showAlert} from './util.js';
-import {resetEffects} from './effect.js';
-import {sendData} from './api.js';
+import { modalHelper } from './modalHelper.js';
+import { findDuplicateElements } from './util.js';
+import { resetEffects } from './effect.js';
+import { sendData } from './api.js';
+import { scale } from './scale.js';
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const regularExpression = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
-const scaleIncrement = 25;
 const firstScaleValue = '100%';
 
 const uploadFormElement = document.querySelector('.img-upload__form');
@@ -23,41 +23,10 @@ const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
 const submitButton = uploadFormElement.querySelector('.img-upload__submit');
 const effectsElement = uploadFormElement.querySelectorAll('.effects-radio');
 
-scaleValueElement.value = firstScaleValue;
-
-scaleSmallerElement.addEventListener('click', () => {
-  let currentScaleValue = parseInt(scaleValueElement.value, 10);
-  if(currentScaleValue >= 50) {
-    scaleValueElement.value = `${currentScaleValue - scaleIncrement}%`;
-    currentScaleValue -= 25;
-    preview.style.transform = `scale(0.${currentScaleValue})`;
-  }
-});
-
-scaleBiggerElement.addEventListener('click', () => {
-  let currentScaleValue = parseInt(scaleValueElement.value, 10);
-  if(currentScaleValue < 75) {
-    scaleValueElement.value = `${currentScaleValue + scaleIncrement}%`;
-    currentScaleValue += 25;
-    preview.style.transform = `scale(0.${currentScaleValue})`;
-  } else {
-    scaleValueElement.value = `${currentScaleValue + scaleIncrement}%`;
-    preview.style.transform = 'scale(1)';
-  }
-});
+scale(preview, scaleValueElement,scaleSmallerElement, scaleBiggerElement, firstScaleValue);
 
 sliderElement.classList.add('hidden');
 resetEffects();
-
-const pristine = new Pristine(uploadFormElement, {
-  classTo: 'img-upload__field-wrapper',
-  errorClass: 'img-upload__invalid',
-  successClass: 'img-upload__valid',
-  errorTextParent: 'img-upload__field-wrapper',
-  errorTextTag: 'div',
-  errorTextClass: 'img-upload__error-text'
-});
-
 
 fileChooserElement.addEventListener('change', () => {
   const file = fileChooserElement.files[0];
@@ -68,9 +37,16 @@ fileChooserElement.addEventListener('change', () => {
   }
 
   modalHelper(uploadFieldElement, closeButtonElement, true);
-  // modalClose(uploadFieldElement, closeButtonElement, true);
 });
 
+const pristine = new Pristine(uploadFormElement, {
+  classTo: 'img-upload__field-wrapper',
+  errorClass: 'img-upload__invalid',
+  successClass: 'img-upload__valid',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextTag: 'div',
+  errorTextClass: 'img-upload__error-text'
+});
 
 const getHashtagErrorMessage = () => {
   const array = hashtagsElement.value.split(' ').map((element) => element.toLowerCase());
@@ -122,6 +98,14 @@ function resetFormValues () {
   });
 }
 
+function showErrorMessage () {
+  const errorTemplateElement= document.querySelector('#error').content.querySelector('.error');
+  const closingButtonElement = errorTemplateElement.querySelector('.error__button');
+  document.querySelector('body').append(errorTemplateElement);
+  modalHelper(errorTemplateElement, closingButtonElement, true);
+  uploadFieldElement.classList.add('hidden');
+}
+
 const setUserFormSubmit = (onSuccess) => {
   uploadFormElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
@@ -135,7 +119,8 @@ const setUserFormSubmit = (onSuccess) => {
           unblockSubmitButton();
         },
         () => {
-          showAlert('Не удалось отправить форму. Попробуйте ещё раз');
+          // showAlert('Не удалось отправить форму. Попробуйте ещё раз');
+          showErrorMessage();
           unblockSubmitButton();
         },
         new FormData(evt.target),

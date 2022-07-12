@@ -6,6 +6,16 @@ const modalHelper = (modalElement, closeButtonElement, isOpening) => {
     if (document.activeElement.className !== 'text__hashtags' && document.activeElement.className !== 'text__description' && isEscapeKey(evt)) {
       evt.preventDefault();
       closePictureModal();
+      if (modalElement.className !== 'error') {
+        resetFormValues();
+      }
+    }
+  };
+
+  const closeErrorHelper = () => {
+    if (document.activeElement.className !== 'error') {
+      closePictureModal();
+      document.querySelector('.img-upload__overlay').classList.remove('hidden');
     }
   };
 
@@ -16,16 +26,24 @@ const modalHelper = (modalElement, closeButtonElement, isOpening) => {
     closeButtonElement.addEventListener('click', () => {
       closePictureModal();
     }, {once: true});
+    if (modalElement.className === 'error') {
+      document.addEventListener('click', closeErrorHelper);
+    }
   }
 
   if(!isOpening) {
     closePictureModal();
-    resetFormValues();
+    if (modalElement.className !== 'error') {
+      resetFormValues();
+    }
+
   }
 
   function closePictureModal () {
     modalElement.classList.add('hidden');
-    document.querySelector('body').classList.remove('modal-open');
+    if (modalElement.className !== 'error') {
+      document.querySelector('body').classList.remove('modal-open');
+    }
     document.removeEventListener('keydown', pictureEscKeydownHelper);
   }
 };
