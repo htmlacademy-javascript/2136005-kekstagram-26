@@ -1,6 +1,6 @@
 import {showBigPicture} from './pictureWindow.js';
 
-const generatePhotoElements = (dataList) => {
+const showPhotos = (dataList) => {
   const photoTemplateElement= document.querySelector('#picture').content.querySelector('.picture');
   const photosFragmentElement = document.createDocumentFragment();
   const pictureContainerElement = document.querySelector('.pictures');
@@ -11,7 +11,6 @@ const generatePhotoElements = (dataList) => {
     newPhotoElement.querySelector('img').src = dataList[i].url;
     newPhotoElement.querySelector('.picture__likes').textContent = dataList[i].likes;
     newPhotoElement.querySelector('.picture__comments').textContent = dataList[i].comments.length;
-    // thumbnailClickHandler(newPhotoElement, dataList[i].comments, dataList[i].description);
 
     photosFragmentElement.append(newPhotoElement);
   }
@@ -20,4 +19,4 @@ const generatePhotoElements = (dataList) => {
   pictureContainerElement.addEventListener('click', showBigPicture);
 };
 
-export {generatePhotoElements};
+export {showPhotos};

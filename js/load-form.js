@@ -1,7 +1,8 @@
-/* eslint-disable no-console */
+///* eslint-disable no-console */
 import {modalHelper} from './modalHelper.js';
-import { findDuplicateElements } from './util.js';
+import {findDuplicateElements, showAlert} from './util.js';
 import {resetEffects} from './effect.js';
+import {sendData} from './api.js';
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const regularExpression = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
@@ -19,6 +20,8 @@ const scaleSmallerElement = uploadFieldElement.querySelector('.scale__control--s
 const scaleBiggerElement = uploadFieldElement.querySelector('.scale__control--bigger');
 const scaleValueElement = uploadFieldElement.querySelector('.scale__control--value');
 const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
+const submitButton = uploadFormElement.querySelector('.img-upload__submit');
+const effectsElement = uploadFormElement.querySelectorAll('.effects-radio');
 
 scaleValueElement.value = firstScaleValue;
 
@@ -65,7 +68,7 @@ fileChooserElement.addEventListener('change', () => {
   }
 
   modalHelper(uploadFieldElement, closeButtonElement, true);
-  fileChooserElement.value = '';
+  // modalClose(uploadFieldElement, closeButtonElement, true);
 });
 
 
@@ -83,23 +86,63 @@ const getHashtagErrorMessage = () => {
 };
 
 const validateHashtags = (value) => {
-  const arrayOfHashtags = value.split(' ').map((element) => element.toLowerCase());
-  const checkValidation = arrayOfHashtags.every((hashtag) => regularExpression.test(hashtag) &&
-                                                              !findDuplicateElements(arrayOfHashtags));
-  return arrayOfHashtags.length <= 5 && checkValidation;
+  if (value === '') {
+    return true;
+  } else {
+    const arrayOfHashtags = value.split(' ').map((element) => element.toLowerCase());
+    const checkValidation = arrayOfHashtags.length === 0 ? true :
+      arrayOfHashtags.every((hashtag) => regularExpression.test(hashtag) && !findDuplicateElements(arrayOfHashtags));
+    return arrayOfHashtags.length <= 5 && checkValidation;
+  }
 };
 
 pristine.addValidator(hashtagsElement, validateHashtags, getHashtagErrorMessage);
 
 pristine.addValidator(commentElement, (value) => value.length <= 140, 'Длина комментария не может составлять больше 140 символов.');
 
-uploadFormElement.addEventListener('submit', (evt) => {
-  if (!pristine.validate()) {
+function blockSubmitButton () {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Опубликовать';
+}
+
+function unblockSubmitButton () {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+}
+
+function resetFormValues () {
+  hashtagsElement.value = '';
+  commentElement.value = '';
+  scaleValueElement.value = firstScaleValue;
+  preview.style.transform = 'scale(1)';
+  fileChooserElement.value = '';
+  resetEffects();
+  effectsElement.forEach((element) => {
+    element.checked = false;
+  });
+}
+
+const setUserFormSubmit = (onSuccess) => {
+  uploadFormElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    hashtagsElement.value = '';
-    commentElement.value = '';
-    scaleValueElement.value = firstScaleValue;
-    preview.style.transform = 'scale(1)';
-    modalHelper(uploadFieldElement, closeButtonElement, false);
-  }
-});
+
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess(uploadFieldElement, closeButtonElement, false);
+          unblockSubmitButton();
+        },
+        () => {
+          showAlert('Не удалось отправить форму. Попробуйте ещё раз');
+          unblockSubmitButton();
+        },
+        new FormData(evt.target),
+      );
+    }
+    resetFormValues();
+  });
+};
+
+export {setUserFormSubmit, resetFormValues};

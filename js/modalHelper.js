@@ -1,4 +1,5 @@
 import {isEscapeKey} from './util.js';
+import { resetFormValues } from './load-form.js';
 
 const modalHelper = (modalElement, closeButtonElement, isOpening) => {
   const pictureEscKeydownHelper = (evt) => {
@@ -19,6 +20,7 @@ const modalHelper = (modalElement, closeButtonElement, isOpening) => {
 
   if(!isOpening) {
     closePictureModal();
+    resetFormValues();
   }
 
   function closePictureModal () {
