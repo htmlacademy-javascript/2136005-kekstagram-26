@@ -1,4 +1,4 @@
-import {getRandomNumber, checkStringLength, createUnicNumber} from './util.js';
+import {getRandomNumber, createUnicNumber} from './util.js';
 
 const names = [
   'Анна',
@@ -65,7 +65,5 @@ const createNewPhotoDescriptionList = () => {
 
   return photosList;
 };
-
-checkStringLength('chekingString', 3);
 
 export {createNewPhotoDescriptionList};

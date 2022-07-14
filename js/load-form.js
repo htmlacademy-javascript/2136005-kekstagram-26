@@ -1,11 +1,14 @@
-/* eslint-disable no-console */
-import {modalHelper} from './modalHelper.js';
+///* eslint-disable no-console */
+import { modalHelper } from './modalHelper.js';
 import { findDuplicateElements } from './util.js';
-import {resetEffects} from './effect.js';
+import { resetEffects } from './effect.js';
+import { sendData } from './api.js';
+import { scale } from './scale.js';
+import { showAlert } from './util.js';
+import { showErrorMessage, showSuccessMessage } from './message.js';
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const regularExpression = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
-const scaleIncrement = 25;
 const firstScaleValue = '100%';
 
 const uploadFormElement = document.querySelector('.img-upload__form');
@@ -19,42 +22,13 @@ const scaleSmallerElement = uploadFieldElement.querySelector('.scale__control--s
 const scaleBiggerElement = uploadFieldElement.querySelector('.scale__control--bigger');
 const scaleValueElement = uploadFieldElement.querySelector('.scale__control--value');
 const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
+const submitButton = uploadFormElement.querySelector('.img-upload__submit');
+const effectsElement = uploadFormElement.querySelectorAll('.effects-radio');
 
-scaleValueElement.value = firstScaleValue;
-
-scaleSmallerElement.addEventListener('click', () => {
-  let currentScaleValue = parseInt(scaleValueElement.value, 10);
-  if(currentScaleValue >= 50) {
-    scaleValueElement.value = `${currentScaleValue - scaleIncrement}%`;
-    currentScaleValue -= 25;
-    preview.style.transform = `scale(0.${currentScaleValue})`;
-  }
-});
-
-scaleBiggerElement.addEventListener('click', () => {
-  let currentScaleValue = parseInt(scaleValueElement.value, 10);
-  if(currentScaleValue < 75) {
-    scaleValueElement.value = `${currentScaleValue + scaleIncrement}%`;
-    currentScaleValue += 25;
-    preview.style.transform = `scale(0.${currentScaleValue})`;
-  } else {
-    scaleValueElement.value = `${currentScaleValue + scaleIncrement}%`;
-    preview.style.transform = 'scale(1)';
-  }
-});
+scale(preview, scaleValueElement,scaleSmallerElement, scaleBiggerElement, firstScaleValue);
 
 sliderElement.classList.add('hidden');
 resetEffects();
-
-const pristine = new Pristine(uploadFormElement, {
-  classTo: 'img-upload__field-wrapper',
-  errorClass: 'img-upload__invalid',
-  successClass: 'img-upload__valid',
-  errorTextParent: 'img-upload__field-wrapper',
-  errorTextTag: 'div',
-  errorTextClass: 'img-upload__error-text'
-});
-
 
 fileChooserElement.addEventListener('change', () => {
   const file = fileChooserElement.files[0];
@@ -65,9 +39,16 @@ fileChooserElement.addEventListener('change', () => {
   }
 
   modalHelper(uploadFieldElement, closeButtonElement, true);
-  fileChooserElement.value = '';
 });
 
+const pristine = new Pristine(uploadFormElement, {
+  classTo: 'img-upload__field-wrapper',
+  errorClass: 'img-upload__invalid',
+  successClass: 'img-upload__valid',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextTag: 'div',
+  errorTextClass: 'img-upload__error-text'
+});
 
 const getHashtagErrorMessage = () => {
   const array = hashtagsElement.value.split(' ').map((element) => element.toLowerCase());
@@ -83,23 +64,65 @@ const getHashtagErrorMessage = () => {
 };
 
 const validateHashtags = (value) => {
-  const arrayOfHashtags = value.split(' ').map((element) => element.toLowerCase());
-  const checkValidation = arrayOfHashtags.every((hashtag) => regularExpression.test(hashtag) &&
-                                                              !findDuplicateElements(arrayOfHashtags));
-  return arrayOfHashtags.length <= 5 && checkValidation;
+  if (value === '') {
+    return true;
+  } else {
+    const arrayOfHashtags = value.split(' ').map((element) => element.toLowerCase());
+    const checkValidation = arrayOfHashtags.length === 0 ? true :
+      arrayOfHashtags.every((hashtag) => regularExpression.test(hashtag) && !findDuplicateElements(arrayOfHashtags));
+    return arrayOfHashtags.length <= 5 && checkValidation;
+  }
 };
 
 pristine.addValidator(hashtagsElement, validateHashtags, getHashtagErrorMessage);
 
 pristine.addValidator(commentElement, (value) => value.length <= 140, 'Длина комментария не может составлять больше 140 символов.');
 
-uploadFormElement.addEventListener('submit', (evt) => {
-  if (!pristine.validate()) {
+function blockSubmitButton () {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Опубликовать';
+}
+
+function unblockSubmitButton () {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+}
+
+function resetFormValues () {
+  hashtagsElement.value = '';
+  commentElement.value = '';
+  scaleValueElement.value = firstScaleValue;
+  preview.style.transform = 'scale(1)';
+  fileChooserElement.value = '';
+  resetEffects();
+  effectsElement.forEach((element) => {
+    element.checked = false;
+  });
+}
+
+const setUserFormSubmit = (onSuccess) => {
+  uploadFormElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    hashtagsElement.value = '';
-    commentElement.value = '';
-    scaleValueElement.value = firstScaleValue;
-    preview.style.transform = 'scale(1)';
-    modalHelper(uploadFieldElement, closeButtonElement, false);
-  }
-});
+
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess(uploadFieldElement, closeButtonElement, false);
+          showSuccessMessage();
+          unblockSubmitButton();
+          resetFormValues();
+        },
+        () => {
+          showAlert();
+          showErrorMessage();
+          unblockSubmitButton();
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
+};
+
+export {setUserFormSubmit, resetFormValues};

@@ -1,8 +1,10 @@
 import {isEscapeKey} from './util.js';
+import { resetFormValues } from './load-form.js';
 
 const modalHelper = (modalElement, closeButtonElement, isOpening) => {
   const pictureEscKeydownHelper = (evt) => {
-    if (document.activeElement.className !== 'text__hashtags' && document.activeElement.className !== 'text__description' && isEscapeKey(evt)) {
+    if (document.activeElement.className !== 'text__hashtags' && document.activeElement.className !== 'text__description' &&
+        !document.querySelector('body').lastChild.classList.contains('error') && isEscapeKey(evt)) {
       evt.preventDefault();
       closePictureModal();
     }
@@ -25,6 +27,7 @@ const modalHelper = (modalElement, closeButtonElement, isOpening) => {
     modalElement.classList.add('hidden');
     document.querySelector('body').classList.remove('modal-open');
     document.removeEventListener('keydown', pictureEscKeydownHelper);
+    resetFormValues();
   }
 };
 
