@@ -4,6 +4,8 @@ import { findDuplicateElements } from './util.js';
 import { resetEffects } from './effect.js';
 import { sendData } from './api.js';
 import { scale } from './scale.js';
+import { showAlert } from './util.js';
+import { showErrorMessage, showSuccessMessage } from './message.js';
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const regularExpression = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
@@ -98,14 +100,6 @@ function resetFormValues () {
   });
 }
 
-function showErrorMessage () {
-  const errorTemplateElement= document.querySelector('#error').content.querySelector('.error');
-  const closingButtonElement = errorTemplateElement.querySelector('.error__button');
-  document.querySelector('body').append(errorTemplateElement);
-  modalHelper(errorTemplateElement, closingButtonElement, true);
-  uploadFieldElement.classList.add('hidden');
-}
-
 const setUserFormSubmit = (onSuccess) => {
   uploadFormElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
@@ -116,17 +110,18 @@ const setUserFormSubmit = (onSuccess) => {
       sendData(
         () => {
           onSuccess(uploadFieldElement, closeButtonElement, false);
+          showSuccessMessage();
           unblockSubmitButton();
+          resetFormValues();
         },
         () => {
-          // showAlert('Не удалось отправить форму. Попробуйте ещё раз');
+          showAlert();
           showErrorMessage();
           unblockSubmitButton();
         },
         new FormData(evt.target),
       );
     }
-    resetFormValues();
   });
 };
 

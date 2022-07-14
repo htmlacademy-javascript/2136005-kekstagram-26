@@ -3,19 +3,10 @@ import { resetFormValues } from './load-form.js';
 
 const modalHelper = (modalElement, closeButtonElement, isOpening) => {
   const pictureEscKeydownHelper = (evt) => {
-    if (document.activeElement.className !== 'text__hashtags' && document.activeElement.className !== 'text__description' && isEscapeKey(evt)) {
+    if (document.activeElement.className !== 'text__hashtags' && document.activeElement.className !== 'text__description' &&
+        !document.querySelector('body').lastChild.classList.contains('error') && isEscapeKey(evt)) {
       evt.preventDefault();
       closePictureModal();
-      if (modalElement.className !== 'error') {
-        resetFormValues();
-      }
-    }
-  };
-
-  const closeErrorHelper = () => {
-    if (document.activeElement.className !== 'error') {
-      closePictureModal();
-      document.querySelector('.img-upload__overlay').classList.remove('hidden');
     }
   };
 
@@ -26,25 +17,17 @@ const modalHelper = (modalElement, closeButtonElement, isOpening) => {
     closeButtonElement.addEventListener('click', () => {
       closePictureModal();
     }, {once: true});
-    if (modalElement.className === 'error') {
-      document.addEventListener('click', closeErrorHelper);
-    }
   }
 
   if(!isOpening) {
     closePictureModal();
-    if (modalElement.className !== 'error') {
-      resetFormValues();
-    }
-
   }
 
   function closePictureModal () {
     modalElement.classList.add('hidden');
-    if (modalElement.className !== 'error') {
-      document.querySelector('body').classList.remove('modal-open');
-    }
+    document.querySelector('body').classList.remove('modal-open');
     document.removeEventListener('keydown', pictureEscKeydownHelper);
+    resetFormValues();
   }
 };
 

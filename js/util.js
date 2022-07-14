@@ -26,7 +26,7 @@ const createUnicNumber = (array, upper, lowerBound) => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-function findDuplicateElements (array) {
+const findDuplicateElements = (array) => {
   for (let i = 0; i < array.length; i++) {
     for(let j = 0; j < array.length; j++) {
       if (i !== j && array[i] === array[j]){
@@ -34,7 +34,7 @@ function findDuplicateElements (array) {
       }
     }
   }
-}
+};
 
 const showAlert = (message) => {
   const alertContainer = document.createElement('div');
