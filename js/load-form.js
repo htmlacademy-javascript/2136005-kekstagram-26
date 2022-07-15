@@ -4,7 +4,6 @@ import { findDuplicateElements } from './util.js';
 import { resetEffects } from './effect.js';
 import { sendData } from './api.js';
 import { scale } from './scale.js';
-import { showAlert } from './util.js';
 import { showErrorMessage, showSuccessMessage } from './message.js';
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
@@ -23,12 +22,13 @@ const scaleBiggerElement = uploadFieldElement.querySelector('.scale__control--bi
 const scaleValueElement = uploadFieldElement.querySelector('.scale__control--value');
 const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
 const submitButton = uploadFormElement.querySelector('.img-upload__submit');
-const effectsElement = uploadFormElement.querySelectorAll('.effects-radio');
+const effectsElements = uploadFormElement.querySelectorAll('.effects__radio');
 
 scale(preview, scaleValueElement,scaleSmallerElement, scaleBiggerElement, firstScaleValue);
 
 sliderElement.classList.add('hidden');
 resetEffects();
+
 
 fileChooserElement.addEventListener('change', () => {
   const file = fileChooserElement.files[0];
@@ -95,15 +95,15 @@ function resetFormValues () {
   preview.style.transform = 'scale(1)';
   fileChooserElement.value = '';
   resetEffects();
-  effectsElement.forEach((element) => {
+  effectsElements.forEach((element) => {
     element.checked = false;
   });
+  effectsElements[0].checked = true;
 }
 
 const setUserFormSubmit = (onSuccess) => {
   uploadFormElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
-
     const isValid = pristine.validate();
     if (isValid) {
       blockSubmitButton();
@@ -115,7 +115,6 @@ const setUserFormSubmit = (onSuccess) => {
           resetFormValues();
         },
         () => {
-          showAlert();
           showErrorMessage();
           unblockSubmitButton();
         },

@@ -94,7 +94,7 @@ const sliderUpdateHandler = () => {
   }
   const sliderValue = sliderElement.noUiSlider.get();
   preview.style.filter = `${chosenEffect.filterName}(${sliderValue}${chosenEffect.unit})`;
-  preview.className = `${chosenEffect.claccName}`;
+  preview.className = `${chosenEffect.className}`;
   effectLevel.value = sliderValue;
 };
 

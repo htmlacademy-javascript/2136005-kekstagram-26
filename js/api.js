@@ -1,6 +1,9 @@
+const GET_REMOTE_WEBSERVER = 'https://26.javascript.pages.academy/kekstagram/data';
+const POST_REMOTE_WEBSERVER = 'https://26.javascript.pages.academy/kekstagram';
+
 const getData = async (onSuccess, onFail) => {
   try {
-    const response = await fetch('https://26.javascript.pages.academy/kekstagram/data');
+    const response = await fetch(GET_REMOTE_WEBSERVER);
     if (!response.ok) {
       throw new Error('Не удалось загрузить фотографии');
     }
@@ -15,7 +18,7 @@ const getData = async (onSuccess, onFail) => {
 const sendData = async (onSuccess, onFail, body) => {
   try {
     const response = await fetch(
-      'https://26.javascript.pages.academy/kekstagram',
+      POST_REMOTE_WEBSERVER,
       {
         method: 'POST',
         body,
@@ -26,7 +29,7 @@ const sendData = async (onSuccess, onFail, body) => {
     }
     onSuccess();
   } catch (error) {
-    onFail('Не удалось отправить форму. Попробуйте еще раз');
+    onFail();
   }
 };
 
