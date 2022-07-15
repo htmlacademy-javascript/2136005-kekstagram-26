@@ -67,4 +67,12 @@ const getRandomElements = (number, array) => {
   return randomArray;
 };
 
-export{getRandomNumber, checkStringLength, createUnicNumber, isEscapeKey, findDuplicateElements, showAlert, getRandomElements};
+const debounce = (callback, timeoutDelay) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+export{getRandomNumber, checkStringLength, createUnicNumber, isEscapeKey, findDuplicateElements, showAlert, getRandomElements, debounce};

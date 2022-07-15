@@ -8,13 +8,13 @@ import { setFilters } from './filter.js';
 
 let descriptionsList;
 
+const getDescriptionsList = () => descriptionsList;
+
 const onGetDataSuccess = (data) => {
   showPhotos(data);
-  setFilters();
+  setFilters(data);
   descriptionsList = data;
 };
-
-const getDescriptionsList = () => descriptionsList;
 
 getData(onGetDataSuccess, showAlert);
 

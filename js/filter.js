@@ -1,8 +1,8 @@
-import { getRandomElements } from './util.js';
-import { getDescriptionsList } from './main.js';
+import { debounce, getRandomElements } from './util.js';
 import { showPhotos } from './thumbnails.js';
 
 const NUMBER_OF_RANDOM_PHOTOS = 10;
+const RERENDER_DELAY = 500;
 
 const removeElements = () => {
   const pictureContainerElement = document.querySelector('.pictures');
@@ -17,9 +17,14 @@ const removeElements = () => {
   }
 };
 
+const renderFilteredPhotos = (photos) => {
+  removeElements();
+  showPhotos(photos);
+};
+
 const sortArray = (photoA, photoB) => photoB.comments.length - photoA.comments.length;
 
-const setFilters = () => {
+const setFilters = (photosList) => {
   const filtersElement = document.querySelector('.img-filters');
 
   filtersElement.classList.remove('img-filters--inactive');
@@ -35,21 +40,18 @@ const setFilters = () => {
 
   const filterHandler = (evt) => {
     if (evt.target.id === 'filter-random') {
-      const randomPhotos = getRandomElements(NUMBER_OF_RANDOM_PHOTOS, getDescriptionsList());
+      const randomPhotos = getRandomElements(NUMBER_OF_RANDOM_PHOTOS, photosList);
 
       setStyles(evt, '#filter-default', '#filter-discussed');
-      removeElements();
-      showPhotos(randomPhotos);
+      debounce(() => renderFilteredPhotos(randomPhotos), RERENDER_DELAY)();
 
     } else if (evt.target.id === 'filter-discussed') {
       setStyles(evt, '#filter-default', '#filter-random');
-      removeElements();
-      showPhotos(getDescriptionsList().slice().sort(sortArray));
+      debounce(() => renderFilteredPhotos(photosList.slice().sort(sortArray)), RERENDER_DELAY)();
 
     } else if (evt.target.id === 'filter-default') {
       setStyles(evt, '#filter-random', '#filter-discussed');
-      removeElements();
-      showPhotos(getDescriptionsList());
+      debounce(() => renderFilteredPhotos(photosList), RERENDER_DELAY)();
     }
   };
 
