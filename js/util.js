@@ -1,4 +1,6 @@
 const ALERT_SHOW_TIME = 5000;
+const LOWER_ID_BOUND = 1;
+const UPPER_PHOTO_ID_BOUND = 24;
 
 const getRandomNumber = (a, b) => {
   const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
@@ -57,4 +59,20 @@ const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
-export{getRandomNumber, checkStringLength, createUnicNumber, isEscapeKey, findDuplicateElements, showAlert};
+const getRandomElements = (number, array) => {
+  const randomArray = [];
+  for (let i = 0; i < number; i++) {
+    randomArray[i] = array[createUnicNumber(randomArray, UPPER_PHOTO_ID_BOUND, LOWER_ID_BOUND)];
+  }
+  return randomArray;
+};
+
+const debounce = (callback, timeoutDelay) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+export{getRandomNumber, checkStringLength, createUnicNumber, isEscapeKey, findDuplicateElements, showAlert, getRandomElements, debounce};

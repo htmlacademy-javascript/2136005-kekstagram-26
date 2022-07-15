@@ -63,16 +63,12 @@ const showSuccessMessage = () => {
     closeModal();
   });
 
-  document.addEventListener('keydown', (evt) => {
-    if (evt.code === 'Escape') {
-      successElement.classList.add('hidden');
-    }
-  });
+  document.addEventListener('keydown', escKeydownHelper);
 
   document.addEventListener('click', clickOutsideHelper);
 
   function closeModal () {
-    successElement.classList.add('hidden');
+    document.querySelector('body').removeChild(successElement);
     document.querySelector('body').classList.remove('modal-open');
     document.removeEventListener('keydown', escKeydownHelper);
     document.removeEventListener('click', clickOutsideHelper);

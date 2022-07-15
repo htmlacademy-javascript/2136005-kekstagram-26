@@ -1,5 +1,5 @@
 
-const scale = (preview, scaleValueElement,scaleSmallerElement, scaleBiggerElement, firstScaleValue) => {
+const scale = (preview, scaleValueElement, scaleSmallerElement, scaleBiggerElement, firstScaleValue) => {
   const scaleIncrement = 25;
   scaleValueElement.value = firstScaleValue;
 
