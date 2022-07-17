@@ -1,4 +1,4 @@
-import {showBigPicture} from './pictureWindow.js';
+import { showBigPicture } from './picture-window.js';
 
 const showPhotos = (dataList) => {
   const photoTemplateElement= document.querySelector('#picture').content.querySelector('.picture');
@@ -19,4 +19,4 @@ const showPhotos = (dataList) => {
   pictureContainerElement.addEventListener('click', showBigPicture);
 };
 
-export {showPhotos};
+export { showPhotos };

@@ -3,6 +3,9 @@ import { showPhotos } from './thumbnails.js';
 
 const NUMBER_OF_RANDOM_PHOTOS = 10;
 const RERENDER_DELAY = 500;
+const FILTER_COLOR = 'white';
+const FILTER_BACKGROUND_COLOR = '#232321';
+const NEW_FILTER_COLOR = '#ff4e4e';
 
 const removeElements = () => {
   const pictureContainerElement = document.querySelector('.pictures');
@@ -22,6 +25,21 @@ const renderFilteredPhotos = (photos) => {
   showPhotos(photos);
 };
 
+const setStyles = (evt, filtersElement, filterA, filterB) => {
+  filtersElement.querySelector(filterA).style.color = FILTER_COLOR;
+  filtersElement.querySelector(filterA).style.backgroundColor = FILTER_BACKGROUND_COLOR;
+  filtersElement.querySelector(filterB).style.color = FILTER_COLOR;
+  filtersElement.querySelector(filterB).style.backgroundColor = FILTER_BACKGROUND_COLOR;
+  evt.target.style.color = NEW_FILTER_COLOR;
+  evt.target.style.backgroundColor = FILTER_COLOR;
+};
+
+const setPhotosHandler = (evt, filtersElement, filterA, filterB, cb) => {
+  setStyles(evt, filtersElement, filterA, filterB);
+  const debounsedCallBack = debounce(cb, RERENDER_DELAY);
+  debounsedCallBack();
+};
+
 const sortArray = (photoA, photoB) => photoB.comments.length - photoA.comments.length;
 
 const setFilters = (photosList) => {
@@ -29,29 +47,14 @@ const setFilters = (photosList) => {
 
   filtersElement.classList.remove('img-filters--inactive');
 
-  const setStyles = (evt, filterA, filterB) => {
-    filtersElement.querySelector(filterA).style.color = 'white';
-    filtersElement.querySelector(filterA).style.backgroundColor = '#232321';
-    filtersElement.querySelector(filterB).style.color = 'white';
-    filtersElement.querySelector(filterB).style.backgroundColor = '#232321';
-    evt.target.style.color = '#ff4e4e';
-    evt.target.style.backgroundColor = 'white';
-  };
-
   const filterHandler = (evt) => {
     if (evt.target.id === 'filter-random') {
       const randomPhotos = getRandomElements(NUMBER_OF_RANDOM_PHOTOS, photosList);
-
-      setStyles(evt, '#filter-default', '#filter-discussed');
-      debounce(() => renderFilteredPhotos(randomPhotos), RERENDER_DELAY)();
-
+      setPhotosHandler(evt, filtersElement, '#filter-default', '#filter-discussed', () => renderFilteredPhotos(randomPhotos));
     } else if (evt.target.id === 'filter-discussed') {
-      setStyles(evt, '#filter-default', '#filter-random');
-      debounce(() => renderFilteredPhotos(photosList.slice().sort(sortArray)), RERENDER_DELAY)();
-
-    } else if (evt.target.id === 'filter-default') {
-      setStyles(evt, '#filter-random', '#filter-discussed');
-      debounce(() => renderFilteredPhotos(photosList), RERENDER_DELAY)();
+      setPhotosHandler(evt, filtersElement, '#filter-default', '#filter-random', () => renderFilteredPhotos(photosList.slice().sort(sortArray)));
+    } else {
+      setPhotosHandler(evt, filtersElement, '#filter-random', '#filter-discussed', () => renderFilteredPhotos(photosList));
     }
   };
 
@@ -59,4 +62,4 @@ const setFilters = (photosList) => {
 
 };
 
-export {setFilters};
+export { setFilters };

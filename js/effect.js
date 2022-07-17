@@ -1,7 +1,7 @@
 const uploadFormElement = document.querySelector('.img-upload__form');
-const preview = uploadFormElement.querySelector('.img-upload__preview img');
+const previewElement = uploadFormElement.querySelector('.img-upload__preview img');
 const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
-const effectLevel = uploadFormElement.querySelector('.effect-level__value');
+const effectLevelElement = uploadFormElement.querySelector('.effect-level__value');
 
 const EFFECTS = [
   {
@@ -85,17 +85,17 @@ const formChangeHandler = (evt) => {
 };
 
 const sliderUpdateHandler = () => {
-  preview.style.filter = 'none';
-  preview.className = '';
-  effectLevel.value ='';
+  previewElement.style.filter = 'none';
+  previewElement.className = '';
+  effectLevelElement.value ='';
   if (chosenEffect === DEFAULT_EFFECT) {
     sliderElement.classList.add('hidden');
     return;
   }
   const sliderValue = sliderElement.noUiSlider.get();
-  preview.style.filter = `${chosenEffect.filterName}(${sliderValue}${chosenEffect.unit})`;
-  preview.className = `${chosenEffect.className}`;
-  effectLevel.value = sliderValue;
+  previewElement.style.filter = `${chosenEffect.filterName}(${sliderValue}${chosenEffect.unit})`;
+  previewElement.className = `${chosenEffect.className}`;
+  effectLevelElement.value = sliderValue;
 };
 
 const resetEffects = () => {
@@ -118,4 +118,4 @@ updateSlider();
 uploadFormElement.addEventListener('change', formChangeHandler);
 sliderElement.noUiSlider.on('update', sliderUpdateHandler);
 
-export {resetEffects};
+export { resetEffects };

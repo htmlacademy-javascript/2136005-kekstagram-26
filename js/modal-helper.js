@@ -1,5 +1,6 @@
-import {isEscapeKey} from './util.js';
+import { isEscapeKey } from './util.js';
 import { resetFormValues } from './load-form.js';
+
 const modalHelper = (modalElement, closeButtonElement, isOpening) => {
   const pictureEscKeydownHelper = (evt) => {
     if (document.activeElement.className !== 'text__hashtags' && document.activeElement.className !== 'text__description' &&
@@ -31,4 +32,4 @@ const modalHelper = (modalElement, closeButtonElement, isOpening) => {
   }
 };
 
-export {modalHelper};
+export { modalHelper };

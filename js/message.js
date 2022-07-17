@@ -1,13 +1,15 @@
 import { resetFormValues } from './load-form.js';
 import { isEscapeKey } from './util.js';
 
+const Z_INDEX = '5';
+
 const showErrorMessage = () => {
   const errorTemplateElement = document.querySelector('#error').content.querySelector('.error');
   const errorElement = errorTemplateElement.cloneNode(true);
   const closeButtonElement = errorElement.querySelector('.error__button');
 
   document.querySelector('body').append(errorElement);
-  errorElement.style.zIndex = '5';
+  errorElement.style.zIndex = Z_INDEX;
 
   const escKeydownHelper = (evt) => {
     if (isEscapeKey(evt)) {

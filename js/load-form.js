@@ -1,5 +1,4 @@
-///* eslint-disable no-console */
-import { modalHelper } from './modalHelper.js';
+import { modalHelper } from './modal-helper.js';
 import { findDuplicateElements } from './util.js';
 import { resetEffects } from './effect.js';
 import { sendData } from './api.js';
@@ -7,13 +6,16 @@ import { scale } from './scale.js';
 import { showErrorMessage, showSuccessMessage } from './message.js';
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+const MAX_HASHTAGS = 5;
+const COMMENT_LENGTH = 140;
 const regularExpression = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
-const firstScaleValue = '100%';
+const SETUP_SCALE_VALUE = '100%';
+const TRANSFORM_SETUP = 'scale(1)';
 
 const uploadFormElement = document.querySelector('.img-upload__form');
 const fileChooserElement = uploadFormElement.querySelector('#upload-file');
 const uploadFieldElement = uploadFormElement.querySelector('.img-upload__overlay');
-const preview = uploadFieldElement.querySelector('.img-upload__preview img');
+const previewElement = uploadFieldElement.querySelector('.img-upload__preview img');
 const hashtagsElement = uploadFormElement.querySelector('.text__hashtags');
 const commentElement = uploadFormElement.querySelector('.text__description');
 const closeButtonElement = uploadFieldElement.querySelector('#upload-cancel');
@@ -21,21 +23,19 @@ const scaleSmallerElement = uploadFieldElement.querySelector('.scale__control--s
 const scaleBiggerElement = uploadFieldElement.querySelector('.scale__control--bigger');
 const scaleValueElement = uploadFieldElement.querySelector('.scale__control--value');
 const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
-const submitButton = uploadFormElement.querySelector('.img-upload__submit');
+const submitButtonElement = uploadFormElement.querySelector('.img-upload__submit');
 const effectsElements = uploadFormElement.querySelectorAll('.effects__radio');
 
-scale(preview, scaleValueElement,scaleSmallerElement, scaleBiggerElement, firstScaleValue);
-
+scale(previewElement, scaleValueElement,scaleSmallerElement, scaleBiggerElement, SETUP_SCALE_VALUE);
 sliderElement.classList.add('hidden');
 resetEffects();
-
 
 fileChooserElement.addEventListener('change', () => {
   const file = fileChooserElement.files[0];
   const fileName = file.name.toLowerCase();
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
   if (matches) {
-    preview.src = URL.createObjectURL(file);
+    previewElement.src = URL.createObjectURL(file);
   }
 
   modalHelper(uploadFieldElement, closeButtonElement, true);
@@ -58,7 +58,7 @@ const getHashtagErrorMessage = () => {
   if(findDuplicateElements(array)){
     return 'Упс, такой хэштег уже есть!';
   }
-  if (array.length > 5) {
+  if (array.length > MAX_HASHTAGS) {
     return 'Максимум 5 хэштегов!';
   }
 };
@@ -70,36 +70,36 @@ const validateHashtags = (value) => {
     const arrayOfHashtags = value.split(' ').map((element) => element.toLowerCase());
     const checkValidation = arrayOfHashtags.length === 0 ? true :
       arrayOfHashtags.every((hashtag) => regularExpression.test(hashtag) && !findDuplicateElements(arrayOfHashtags));
-    return arrayOfHashtags.length <= 5 && checkValidation;
+    return arrayOfHashtags.length <= MAX_HASHTAGS && checkValidation;
   }
 };
 
 pristine.addValidator(hashtagsElement, validateHashtags, getHashtagErrorMessage);
 
-pristine.addValidator(commentElement, (value) => value.length <= 140, 'Длина комментария не может составлять больше 140 символов.');
+pristine.addValidator(commentElement, (value) => value.length <= COMMENT_LENGTH, 'Длина комментария не может составлять больше 140 символов.');
 
-function blockSubmitButton () {
-  submitButton.disabled = true;
-  submitButton.textContent = 'Опубликовать';
-}
+const blockSubmitButton = () => {
+  submitButtonElement.disabled = true;
+  submitButtonElement.textContent = 'Опубликовать';
+};
 
-function unblockSubmitButton () {
-  submitButton.disabled = false;
-  submitButton.textContent = 'Опубликовать';
-}
+const unblockSubmitButton = () => {
+  submitButtonElement.disabled = false;
+  submitButtonElement.textContent = 'Опубликовать';
+};
 
-function resetFormValues () {
+const resetFormValues = () => {
   hashtagsElement.value = '';
   commentElement.value = '';
-  scaleValueElement.value = firstScaleValue;
-  preview.style.transform = 'scale(1)';
+  scaleValueElement.value = SETUP_SCALE_VALUE;
+  previewElement.style.transform = TRANSFORM_SETUP;
   fileChooserElement.value = '';
   resetEffects();
   effectsElements.forEach((element) => {
     element.checked = false;
   });
   effectsElements[0].checked = true;
-}
+};
 
 const setUserFormSubmit = (onSuccess) => {
   uploadFormElement.addEventListener('submit', (evt) => {
@@ -124,4 +124,4 @@ const setUserFormSubmit = (onSuccess) => {
   });
 };
 
-export {setUserFormSubmit, resetFormValues};
+export { setUserFormSubmit, resetFormValues };
