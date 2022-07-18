@@ -11,6 +11,10 @@ const COMMENT_LENGTH = 140;
 const regularExpression = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
 const SETUP_SCALE_VALUE = '100%';
 const TRANSFORM_SETUP = 'scale(1)';
+const COMMENT_ERROR_MESSAGE = 'Длина комментария не может составлять больше 140 символов.';
+const FORMAT_ERROR_MESSAGE = 'Упс! Неверный формат!';
+const DUPLICATE_ERROR_MESSAGE = 'Упс, такой хэштег уже есть!';
+const AMOUNT_ERROR_MESSAGE = 'Максимум 5 хэштегов!';
 
 const uploadFormElement = document.querySelector('.img-upload__form');
 const fileChooserElement = uploadFormElement.querySelector('#upload-file');
@@ -53,13 +57,13 @@ const pristine = new Pristine(uploadFormElement, {
 const getHashtagErrorMessage = () => {
   const array = hashtagsElement.value.split(' ').map((element) => element.toLowerCase());
   if (hashtagsElement.value && !array.every((element) => regularExpression.test(element))) {
-    return 'Упс! Неверный формат!';
+    return FORMAT_ERROR_MESSAGE;
   }
   if(findDuplicateElements(array)){
-    return 'Упс, такой хэштег уже есть!';
+    return DUPLICATE_ERROR_MESSAGE;
   }
   if (array.length > MAX_HASHTAGS) {
-    return 'Максимум 5 хэштегов!';
+    return AMOUNT_ERROR_MESSAGE;
   }
 };
 
@@ -76,11 +80,11 @@ const validateHashtags = (value) => {
 
 pristine.addValidator(hashtagsElement, validateHashtags, getHashtagErrorMessage);
 
-pristine.addValidator(commentElement, (value) => value.length <= COMMENT_LENGTH, 'Длина комментария не может составлять больше 140 символов.');
+pristine.addValidator(commentElement, (value) => value.length <= COMMENT_LENGTH, COMMENT_ERROR_MESSAGE);
 
 const blockSubmitButton = () => {
   submitButtonElement.disabled = true;
-  submitButtonElement.textContent = 'Опубликовать';
+  submitButtonElement.textContent = 'Сохраняем...';
 };
 
 const unblockSubmitButton = () => {

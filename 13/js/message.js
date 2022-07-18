@@ -25,9 +25,7 @@ const showErrorMessage = () => {
     }
   };
 
-  closeButtonElement.addEventListener('click', () => {
-    closeModal();
-  });
+  closeButtonElement.addEventListener('click', closeModal);
 
   document.addEventListener('keydown', escKeydownHelper);
 
@@ -61,9 +59,7 @@ const showSuccessMessage = () => {
     }
   };
 
-  closeButtonElement.addEventListener('click', () => {
-    closeModal();
-  });
+  closeButtonElement.addEventListener('click', closeModal);
 
   document.addEventListener('keydown', escKeydownHelper);
 
@@ -72,8 +68,8 @@ const showSuccessMessage = () => {
   function closeModal () {
     document.querySelector('body').removeChild(successElement);
     document.querySelector('body').classList.remove('modal-open');
+    closeButtonElement.removeEventListener('click', closeModal);
     document.removeEventListener('keydown', escKeydownHelper);
-    document.removeEventListener('click', clickOutsideHelper);
     resetFormValues();
   }
 };
