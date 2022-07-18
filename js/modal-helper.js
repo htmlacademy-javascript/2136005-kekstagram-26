@@ -10,14 +10,16 @@ const modalHelper = (modalElement, closeButtonElement, isOpening) => {
     }
   };
 
+  const buttonCloseHelper = (evt) => {
+    evt.preventDefault();
+    closePictureModal();
+  };
+
   if (isOpening) {
     modalElement.classList.remove('hidden');
     document.querySelector('body').classList.add('modal-open');
     document.addEventListener('keydown', pictureEscKeydownHelper);
-    closeButtonElement.addEventListener('click', (evt) => {
-      evt.preventDefault();
-      closePictureModal();
-    }, {once: true});
+    closeButtonElement.addEventListener('click', buttonCloseHelper);
   }
 
   if(!isOpening) {
@@ -26,6 +28,7 @@ const modalHelper = (modalElement, closeButtonElement, isOpening) => {
 
   function closePictureModal () {
     modalElement.classList.add('hidden');
+    closeButtonElement.removeEventListener('click', buttonCloseHelper);
     document.querySelector('body').classList.remove('modal-open');
     document.removeEventListener('keydown', pictureEscKeydownHelper);
     resetFormValues();
