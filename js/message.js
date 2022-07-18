@@ -1,13 +1,15 @@
 import { resetFormValues } from './load-form.js';
 import { isEscapeKey } from './util.js';
 
+const Z_INDEX = '5';
+
 const showErrorMessage = () => {
   const errorTemplateElement = document.querySelector('#error').content.querySelector('.error');
   const errorElement = errorTemplateElement.cloneNode(true);
   const closeButtonElement = errorElement.querySelector('.error__button');
 
   document.querySelector('body').append(errorElement);
-  errorElement.style.zIndex = '5';
+  errorElement.style.zIndex = Z_INDEX;
 
   const escKeydownHelper = (evt) => {
     if (isEscapeKey(evt)) {
@@ -23,9 +25,7 @@ const showErrorMessage = () => {
     }
   };
 
-  closeButtonElement.addEventListener('click', () => {
-    closeModal();
-  });
+  closeButtonElement.addEventListener('click', closeModal);
 
   document.addEventListener('keydown', escKeydownHelper);
 
@@ -59,9 +59,7 @@ const showSuccessMessage = () => {
     }
   };
 
-  closeButtonElement.addEventListener('click', () => {
-    closeModal();
-  });
+  closeButtonElement.addEventListener('click', closeModal);
 
   document.addEventListener('keydown', escKeydownHelper);
 
@@ -70,8 +68,8 @@ const showSuccessMessage = () => {
   function closeModal () {
     document.querySelector('body').removeChild(successElement);
     document.querySelector('body').classList.remove('modal-open');
+    closeButtonElement.removeEventListener('click', closeModal);
     document.removeEventListener('keydown', escKeydownHelper);
-    document.removeEventListener('click', clickOutsideHelper);
     resetFormValues();
   }
 };

@@ -1,4 +1,4 @@
-import {getRandomNumber, createUnicNumber} from './util.js';
+import { getRandomNumber, createUnicNumber } from './util.js';
 
 const names = [
   'Анна',
@@ -50,7 +50,7 @@ const createcommentsList = () => {
   return commentsList;
 };
 
-const createNewPhotoDescriptionList = () => {
+const createNewPhotoDescriptionsList = () => {
   const photosList =[];
   for(let i = LOWER_ARRAY_BOUND+1; i <= UPPER_PHOTO_ID_BOUND; i++) {
     const photo = {
@@ -66,4 +66,4 @@ const createNewPhotoDescriptionList = () => {
   return photosList;
 };
 
-export {createNewPhotoDescriptionList};
+export { createNewPhotoDescriptionsList };

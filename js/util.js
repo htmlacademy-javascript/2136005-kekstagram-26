@@ -75,4 +75,4 @@ const debounce = (callback, timeoutDelay) => {
   };
 };
 
-export{getRandomNumber, checkStringLength, createUnicNumber, isEscapeKey, findDuplicateElements, showAlert, getRandomElements, debounce};
+export{ getRandomNumber, checkStringLength, createUnicNumber, isEscapeKey, findDuplicateElements, showAlert, getRandomElements, debounce };

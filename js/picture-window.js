@@ -1,5 +1,7 @@
-import { modalHelper } from './modalHelper.js';
+import { modalHelper } from './modal-helper.js';
 import { getDescriptionsList } from './main.js';
+
+const MAX_COMMENTS = 5;
 
 const addComments = (list, element, firstIndex, maxIndex) => {
   const commentsFragmentElement = document.createDocumentFragment();
@@ -30,27 +32,27 @@ const showBigPicture = (evt) => {
     const commentsElement = bigPictureElement.querySelector('.social__comments');
     const commentCountElement = bigPictureElement.querySelector('.social__comment-count');
     const commentsLoaderButtonElement = bigPictureElement.querySelector('.comments-loader');
-    const totalCommentsTemplate = bigPictureElement.querySelector('.comments-count').cloneNode(true);
+    const totalCommentsTemplateElement = bigPictureElement.querySelector('.comments-count').cloneNode(true);
 
     modalHelper(bigPictureElement, closeButtonElement, true);
 
     bigPictureElement.querySelector('.big-picture__img').querySelector('img').src = photoData.url;
     bigPictureElement.querySelector('.likes-count').textContent = photoData.likes;
-    totalCommentsTemplate.textContent = commentsList.length;
-    commentCountElement.textContent = `${commentsList.length < 6 ? commentsList.length : 5} из `;
-    commentCountElement.appendChild(totalCommentsTemplate);
+    totalCommentsTemplateElement.textContent = commentsList.length;
+    commentCountElement.textContent = `${commentsList.length < MAX_COMMENTS + 1 ? commentsList.length : MAX_COMMENTS} из `;
+    commentCountElement.appendChild(totalCommentsTemplateElement);
     bigPictureElement.querySelector('.social__caption').textContent = photoData.description;
 
-    const commentsNumber = commentsList.length < 6 ? commentsList.length : 5;
+    const commentsNumber = commentsList.length < MAX_COMMENTS + 1 ? commentsList.length : MAX_COMMENTS;
     addComments(commentsList, commentsElement, 0, commentsNumber);
 
-    if(commentsList.length > 5) {
+    if(commentsList.length > MAX_COMMENTS) {
       commentsLoaderButtonElement.classList.remove('hidden');
       const loaderButtonClickHandler = () => {
-        const commentsAmount = commentsList.length < commentsElement.childNodes.length + 5 ? commentsList.length : commentsElement.childNodes.length + 5;
+        const commentsAmount = commentsList.length < commentsElement.childNodes.length + MAX_COMMENTS ? commentsList.length : commentsElement.childNodes.length + MAX_COMMENTS;
         addComments(commentsList, commentsElement, commentsElement.childNodes.length, commentsAmount);
         commentCountElement.textContent = `${commentsAmount} из `;
-        commentCountElement.appendChild(totalCommentsTemplate);
+        commentCountElement.appendChild(totalCommentsTemplateElement);
         if(commentsList.length === commentsElement.childNodes.length) {
           commentsLoaderButtonElement.removeEventListener('click', loaderButtonClickHandler);
           commentsLoaderButtonElement.classList.add('hidden');
@@ -64,4 +66,4 @@ const showBigPicture = (evt) => {
   }
 };
 
-export {showBigPicture};
+export { showBigPicture };
