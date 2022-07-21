@@ -16,10 +16,10 @@ const checkStringLength = (chekingString, max) => {
   return chekingString.length <= max;
 };
 
-const createUnicNumber = (array, upper, lowerBound) => {
+const createUnicNumber = (numbers, upper, lowerBound) => {
   let randomNumber = getRandomNumber(lowerBound, upper);
-  if (array.length !== 0) {
-    while (array.filter((value) => value.id === randomNumber).length > 0) {
+  if (numbers.length !== 0) {
+    while (numbers.filter((value) => value.id === randomNumber).length > 0) {
       randomNumber = getRandomNumber(lowerBound, upper);
     }
   }
@@ -28,14 +28,15 @@ const createUnicNumber = (array, upper, lowerBound) => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-const findDuplicateElements = (array) => {
-  for (let i = 0; i < array.length; i++) {
-    for(let j = 0; j < array.length; j++) {
-      if (i !== j && array[i] === array[j]){
+const hasDuplicateElements = (elements) => {
+  for (let i = 0; i < elements.length; i++) {
+    for(let j = 0; j < elements.length; j++) {
+      if (i !== j && elements[i] === elements[j]){
         return true;
       }
     }
   }
+  return false;
 };
 
 const showAlert = (message) => {
@@ -75,4 +76,4 @@ const debounce = (callback, timeoutDelay) => {
   };
 };
 
-export{ getRandomNumber, checkStringLength, createUnicNumber, isEscapeKey, findDuplicateElements, showAlert, getRandomElements, debounce };
+export{ getRandomNumber, checkStringLength, createUnicNumber, isEscapeKey, hasDuplicateElements, showAlert, getRandomElements, debounce };

@@ -2,7 +2,7 @@ import { showPhotos } from './thumbnails.js';
 import { getData } from './api.js';
 import { showAlert } from './util.js';
 import { setUserFormSubmit } from './load-form.js';
-import { modalHelper } from './modal-helper.js';
+import { setModalHelper } from './modal-helper.js';
 import { setFilters } from './filter.js';
 
 let descriptionsList;
@@ -17,6 +17,6 @@ const onGetDataSuccess = (data) => {
 
 getData(onGetDataSuccess, showAlert);
 
-setUserFormSubmit(modalHelper);
+setUserFormSubmit(setModalHelper);
 
 export { getDescriptionsList };

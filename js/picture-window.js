@@ -1,4 +1,4 @@
-import { modalHelper } from './modal-helper.js';
+import { setModalHelper } from './modal-helper.js';
 import { getDescriptionsList } from './main.js';
 
 const MAX_COMMENTS = 5;
@@ -44,7 +44,7 @@ const loaderButtonClickHandler = () => {
   }
 };
 
-const showBigPicture = (evt) => {
+const showBigPictureHandler = (evt) => {
   if (evt.target.parentNode.matches('.picture')) {
     const dataList = getDescriptionsList();
     const id = evt.target.parentNode.dataset.id;
@@ -52,7 +52,7 @@ const showBigPicture = (evt) => {
     const commentsList = photoData.comments;
 
     bigPictureElement.dataset.id = id;
-    modalHelper(bigPictureElement, closeButtonElement, true);
+    setModalHelper(bigPictureElement, closeButtonElement, true);
 
     bigPictureElement.querySelector('.big-picture__img').querySelector('img').src = photoData.url;
     bigPictureElement.querySelector('.likes-count').textContent = photoData.likes;
@@ -74,4 +74,4 @@ const showBigPicture = (evt) => {
   }
 };
 
-export { showBigPicture, loaderButtonClickHandler };
+export { showBigPictureHandler, loaderButtonClickHandler };

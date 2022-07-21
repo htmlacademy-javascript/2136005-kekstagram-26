@@ -2,40 +2,41 @@ import { isEscapeKey } from './util.js';
 import { resetFormValues } from './load-form.js';
 import { loaderButtonClickHandler } from './picture-window.js';
 
-const modalHelper = (modalElement, closeButtonElement, isOpening) => {
-  const pictureEscKeydownHelper = (evt) => {
+const setModalHelper = (modalElement, closeButtonElement, isOpening) => {
+  const bodyElement = document.querySelector('body');
+  const escKeydownHandler = (evt) => {
     if (document.activeElement.className !== 'text__hashtags' && document.activeElement.className !== 'text__description' &&
-        document.querySelector('body').lastChild.nodeName !== 'SECTION' && isEscapeKey(evt)) {
+        bodyElement.lastChild.nodeName !== 'SECTION' && isEscapeKey(evt)) {
       evt.preventDefault();
-      closePictureModal();
+      closePictureModalHandler();
     }
   };
 
-  const buttonCloseHelper = (evt) => {
+  const buttonCloseHandler = (evt) => {
     evt.preventDefault();
-    closePictureModal();
+    closePictureModalHandler();
   };
 
   if (isOpening) {
     modalElement.classList.remove('hidden');
-    document.querySelector('body').classList.add('modal-open');
-    document.addEventListener('keydown', pictureEscKeydownHelper);
-    closeButtonElement.addEventListener('click', buttonCloseHelper);
+    bodyElement.classList.add('modal-open');
+    document.addEventListener('keydown', escKeydownHandler);
+    closeButtonElement.addEventListener('click', buttonCloseHandler);
   }
 
   if(!isOpening) {
-    closePictureModal();
+    closePictureModalHandler();
   }
 
-  function closePictureModal () {
+  function closePictureModalHandler () {
     if (modalElement.classList.contains('big-picture')) {
       modalElement.querySelector('.comments-loader').removeEventListener('click', loaderButtonClickHandler);
     }
     modalElement.classList.add('hidden');
-    closeButtonElement.removeEventListener('click', buttonCloseHelper);
-    document.querySelector('body').classList.remove('modal-open');
-    document.removeEventListener('keydown', pictureEscKeydownHelper);
+    closeButtonElement.removeEventListener('click', buttonCloseHandler);
+    bodyElement.classList.remove('modal-open');
+    document.removeEventListener('keydown', escKeydownHandler);
     resetFormValues();
   }
 };
-export { modalHelper };
+export { setModalHelper };
