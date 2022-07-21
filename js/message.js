@@ -3,38 +3,42 @@ import { isEscapeKey } from './util.js';
 
 const Z_INDEX = '5';
 
+const bodyElement = document.querySelector('body');
+
 const showErrorMessage = () => {
   const errorTemplateElement = document.querySelector('#error').content.querySelector('.error');
   const errorElement = errorTemplateElement.cloneNode(true);
   const closeButtonElement = errorElement.querySelector('.error__button');
 
-  document.querySelector('body').append(errorElement);
+  bodyElement.append(errorElement);
   errorElement.style.zIndex = Z_INDEX;
 
-  const escKeydownHelper = (evt) => {
+  const escKeydownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
-      closeModal();
+      closeModalHandler();
     }
   };
 
-  const clickOutsideHelper = (evt) => {
+  const clickOutsideHandler = (evt) => {
     if(document.activeElement.className !== 'error') {
       evt.preventDefault();
-      closeModal();
+      closeModalHandler();
     }
   };
 
-  closeButtonElement.addEventListener('click', closeModal);
+  closeButtonElement.addEventListener('click', closeModalHandler, {once: true});
 
-  document.addEventListener('keydown', escKeydownHelper);
+  document.addEventListener('keydown', escKeydownHandler);
 
-  document.addEventListener('click', clickOutsideHelper);
+  document.addEventListener('click', clickOutsideHandler);
 
-  function closeModal () {
-    document.querySelector('body').removeChild(errorElement);
-    document.removeEventListener('keydown', escKeydownHelper);
-    document.removeEventListener('click', clickOutsideHelper);
+  function closeModalHandler () {
+    if (bodyElement.lastChild.className === errorElement.className) {
+      bodyElement.removeChild(errorElement);
+    }
+    document.removeEventListener('keydown', escKeydownHandler);
+    document.removeEventListener('click', clickOutsideHandler);
   }
 };
 
@@ -43,33 +47,35 @@ const showSuccessMessage = () => {
   const successElement = successTemplateElement.cloneNode(true);
   const closeButtonElement = successElement.querySelector('.success__button');
 
-  document.querySelector('body').append(successElement);
+  bodyElement.append(successElement);
 
-  const escKeydownHelper = (evt) => {
+  const escKeydownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
-      closeModal();
+      closeModalHandler();
     }
   };
 
-  const clickOutsideHelper = (evt) => {
+  const clickOutsideHandler = (evt) => {
     if(document.activeElement.className !== 'success') {
       evt.preventDefault();
-      closeModal();
+      closeModalHandler();
     }
   };
 
-  closeButtonElement.addEventListener('click', closeModal);
+  closeButtonElement.addEventListener('click', closeModalHandler, {once: true});
 
-  document.addEventListener('keydown', escKeydownHelper);
+  document.addEventListener('keydown', escKeydownHandler);
 
-  document.addEventListener('click', clickOutsideHelper);
+  document.addEventListener('click', clickOutsideHandler);
 
-  function closeModal () {
-    document.querySelector('body').removeChild(successElement);
-    document.querySelector('body').classList.remove('modal-open');
-    closeButtonElement.removeEventListener('click', closeModal);
-    document.removeEventListener('keydown', escKeydownHelper);
+  function closeModalHandler () {
+    if (bodyElement.lastChild.className === successElement.className) {
+      bodyElement.removeChild(successElement);
+    }
+    bodyElement.classList.remove('modal-open');
+    document.removeEventListener('keydown', escKeydownHandler);
+    document.removeEventListener('click', clickOutsideHandler);
     resetFormValues();
   }
 };

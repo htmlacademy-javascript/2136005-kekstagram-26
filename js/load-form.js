@@ -1,5 +1,5 @@
-import { modalHelper } from './modal-helper.js';
-import { findDuplicateElements } from './util.js';
+import { setModalHelper } from './modal-helper.js';
+import { hasDuplicateElements } from './util.js';
 import { resetEffects } from './effect.js';
 import { sendData } from './api.js';
 import { scale } from './scale.js';
@@ -42,7 +42,7 @@ fileChooserElement.addEventListener('change', () => {
     previewElement.src = URL.createObjectURL(file);
   }
 
-  modalHelper(uploadFieldElement, closeButtonElement, true);
+  setModalHelper(uploadFieldElement, closeButtonElement, true);
 });
 
 const pristine = new Pristine(uploadFormElement, {
@@ -59,7 +59,7 @@ const getHashtagErrorMessage = () => {
   if (hashtagsElement.value && !array.every((element) => regularExpression.test(element))) {
     return FORMAT_ERROR_MESSAGE;
   }
-  if(findDuplicateElements(array)){
+  if(hasDuplicateElements(array)){
     return DUPLICATE_ERROR_MESSAGE;
   }
   if (array.length > MAX_HASHTAGS) {
@@ -70,12 +70,12 @@ const getHashtagErrorMessage = () => {
 const validateHashtags = (value) => {
   if (value === '') {
     return true;
-  } else {
-    const arrayOfHashtags = value.split(' ').map((element) => element.toLowerCase());
-    const checkValidation = arrayOfHashtags.length === 0 ? true :
-      arrayOfHashtags.every((hashtag) => regularExpression.test(hashtag) && !findDuplicateElements(arrayOfHashtags));
-    return arrayOfHashtags.length <= MAX_HASHTAGS && checkValidation;
   }
+
+  const arrayOfHashtags = value.split(' ').map((element) => element.toLowerCase());
+  const checkValidation = arrayOfHashtags.length === 0 ? true :
+    arrayOfHashtags.every((hashtag) => regularExpression.test(hashtag) && !hasDuplicateElements(arrayOfHashtags));
+  return arrayOfHashtags.length <= MAX_HASHTAGS && checkValidation;
 };
 
 pristine.addValidator(hashtagsElement, validateHashtags, getHashtagErrorMessage);
