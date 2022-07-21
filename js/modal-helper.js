@@ -1,5 +1,6 @@
 import { isEscapeKey } from './util.js';
 import { resetFormValues } from './load-form.js';
+import { loaderButtonClickHandler } from './picture-window.js';
 
 const modalHelper = (modalElement, closeButtonElement, isOpening) => {
   const pictureEscKeydownHelper = (evt) => {
@@ -27,6 +28,9 @@ const modalHelper = (modalElement, closeButtonElement, isOpening) => {
   }
 
   function closePictureModal () {
+    if (modalElement.classList.contains('big-picture')) {
+      modalElement.querySelector('.comments-loader').removeEventListener('click', loaderButtonClickHandler);
+    }
     modalElement.classList.add('hidden');
     closeButtonElement.removeEventListener('click', buttonCloseHelper);
     document.querySelector('body').classList.remove('modal-open');
@@ -34,5 +38,4 @@ const modalHelper = (modalElement, closeButtonElement, isOpening) => {
     resetFormValues();
   }
 };
-
 export { modalHelper };

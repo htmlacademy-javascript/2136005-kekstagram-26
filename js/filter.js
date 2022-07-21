@@ -3,9 +3,6 @@ import { showPhotos } from './thumbnails.js';
 
 const NUMBER_OF_RANDOM_PHOTOS = 10;
 const RERENDER_DELAY = 500;
-const FILTER_COLOR = 'white';
-const FILTER_BACKGROUND_COLOR = '#232321';
-const NEW_FILTER_COLOR = '#ff4e4e';
 
 const removeElements = () => {
   const pictureContainerElement = document.querySelector('.pictures');
@@ -26,18 +23,18 @@ const renderFilteredPhotos = (photos) => {
 };
 
 const setStyles = (evt, filtersElement, filterA, filterB) => {
-  filtersElement.querySelector(filterA).style.color = FILTER_COLOR;
-  filtersElement.querySelector(filterA).style.backgroundColor = FILTER_BACKGROUND_COLOR;
-  filtersElement.querySelector(filterB).style.color = FILTER_COLOR;
-  filtersElement.querySelector(filterB).style.backgroundColor = FILTER_BACKGROUND_COLOR;
-  evt.target.style.color = NEW_FILTER_COLOR;
-  evt.target.style.backgroundColor = FILTER_COLOR;
+  filtersElement.querySelector(filterA).classList.remove('img-filters__button--active');
+  filtersElement.querySelector(filterB).classList.remove('img-filters__button--active');
+  evt.target.classList.add('img-filters__button--active');
 };
 
 const setPhotosHandler = (evt, filtersElement, filterA, filterB, cb) => {
-  setStyles(evt, filtersElement, filterA, filterB);
-  const debounsedCallBack = debounce(cb, RERENDER_DELAY);
-  debounsedCallBack();
+  if (!evt.target.classList.contains('img-filters__button--active')) {
+    setStyles(evt, filtersElement, filterA, filterB);
+    const debounsedCallBack = debounce(cb, RERENDER_DELAY);
+    debounsedCallBack();
+  }
+
 };
 
 const sortArray = (photoA, photoB) => photoB.comments.length - photoA.comments.length;
